@@ -7,79 +7,18 @@
     <title>Document</title>
     <!-- Place your styles here -->
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="assets/fontawesome-free-6.4.2-web/css/fontawesome.min.css">
     <script src="components/HelloWorld.js" type="module"></script>
     <script src="components/TopBar.js" type="module"></script>
     <script src="components/RemixTable.js" type="module"></script>
+    <script src="components/PlayBar.js" type="module"></script>
     <style>
-        .row {
-           display: flex;
-           flex-direction: row;
-           height: 33.33%;
-        }
-       
-        .cell {
-           flex: 1;
-           border: 1px solid black;
-           height: 200px;
-        }
-       
-        .inner-row {
-           display: flex;
-           flex-direction: row;
-           height: 50%;
-        }
-       </style>
+    </style>
 </head>
 <body>
     <!-- Place your content here -->
-    <div class="row">
-        <div class="cell">
-           <div class="inner-row">
-             <div class="cell">
-                <h1>Cell 1</h1>
-             </div>
-             <div class="cell">
-                <h1>Cell 2</h1>
-                <button onclick="getValue1()">Get Slider 1 Value</button>
-                <button onclick="getValue2()">Get Slider 2 Value</button>
-                <button onclick="setValue1()">Set Slider 1 Value to 25</button>
-             </div>
-           </div>
-        </div>
-       </div>
-       
-       <div class="row">
-        <div class="cell">
-           <div class="inner-row">
-             <div class="cell">
-                <h1>Cell 1 left</h1>
-                <input type="range" min="1" max="100" value="50" class="slider" id="myRange1">
- <input type="range" min="1" max="100" value="50" class="slider" id="myRange2">
-
-                
-             </div>
-             <div class="cell">
-                <h1>Cell 2 center</h1>
-             </div>
-             <div class="cell">
-                <h1>Cell 3 center</h1>
-             </div>
-             <div class="cell">
-                <h1>Cell 4 right</h1>
-             </div>
-           </div>
-        </div>
-       </div>
-       
-       <div class="row">
-        <div class="cell">
-           <div class="inner-row">
-             <div class="cell">
-                <h1>Cell bottom</h1>
-             </div>
-           </div>
-        </div>
-       </div>
+    <hello-world></hello-world>
+    <!--<play-bar></play-bar>-->
     <!-- Place your scripts here -->
     <script src="js/script.js"></script>
 </body>
