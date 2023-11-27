@@ -85,7 +85,9 @@ export class RemixTable extends HTMLElement {
 
             <div class="player remix-table">
                 <audio id="audio" controls>
-                    <source src="" type="audio/mp3">
+              
+                    <source src='../assets/CleanGuitarRiff.mp3' type="audio/mp3">
+                    <source src='../assets/Ssendu.mp3' type="audio/mp3">
                     Your browser does not support the audio element.
                 </audio>
 
@@ -101,14 +103,28 @@ export class RemixTable extends HTMLElement {
                         <span class="thumb"></span>
                     </div>
                 </div>
+                
 
                 <span class="duration">0:00</span>
+                
             </div>
         `;
     }
 
     connectedCallback() {
         this.defineListeners();
+        document.addEventListener('playSong', (event) => {
+            this.playAudio(event.detail.src);
+        });
+    }
+
+    playAudio(src) {
+        const audio = this.shadowRoot.querySelector('#audio');
+        audio.src = src;
+        audio.load();
+        audio.play();
+        this.playing = true;
+        this.shadowRoot.querySelector('#play-pause').innerHTML = 'Pause';
     }
 
     defineListeners() {
