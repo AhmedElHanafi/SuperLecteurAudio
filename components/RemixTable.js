@@ -15,6 +15,9 @@ export class RemixTable extends HTMLElement {
                     padding: 20px;
                     border-radius: 4px;
                     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
                 }
 
                 audio {
@@ -24,7 +27,7 @@ export class RemixTable extends HTMLElement {
                 .controls {
                     margin-top: 20px;
                     display: flex;
-                    justify-content: space-between;
+                    justify-content: space-around; /* Espacement équitable des boutons */
                     align-items: center;
                 }
 
@@ -36,6 +39,7 @@ export class RemixTable extends HTMLElement {
                     border-radius: 4px;
                     cursor: pointer;
                     transition: background-color 0.3s ease;
+                    font-size: 14px;
                 }
 
                 button:hover {
@@ -45,6 +49,7 @@ export class RemixTable extends HTMLElement {
                 .timeline {
                     margin-top: 20px;
                     height: 4px;
+                    width: 100%;
                     background: #666;
                     border-radius: 2px;
                     position: relative;
@@ -74,28 +79,30 @@ export class RemixTable extends HTMLElement {
                     font-size: 12px;
                     display: block;
                     margin-top: 10px;
+                    color: #ccc;
                 }
             </style>
 
-            <div class="player">
+            <div class="player remix-table">
                 <audio id="audio" controls>
                     <source src="" type="audio/mp3">
                     Your browser does not support the audio element.
                 </audio>
 
                 <div class="controls">
-                    <button id="remix-1">Load Remix 1</button>
-                    <button id="remix-2">Load Remix 2</button>
                     <button id="play-pause">Play</button>
+                    <button id="rewind">Rewind</button>
+                    <button id="fast-forward">Fast Forward</button>
+                    <button id="next-track">Next Track</button>
                 </div>
 
                 <div class="timeline">
                     <div class="progress">
                         <span class="thumb"></span>
                     </div>
-                    <span class="duration">0:00</span>
                 </div>
-                
+
+                <span class="duration">0:00</span>
             </div>
         `;
     }
@@ -106,25 +113,10 @@ export class RemixTable extends HTMLElement {
 
     defineListeners() {
         const audio = this.shadowRoot.querySelector('#audio');
-        const remix1 = this.shadowRoot.querySelector('#remix-1');
-        const remix2 = this.shadowRoot.querySelector('#remix-2');
         const playPause = this.shadowRoot.querySelector('#play-pause');
-
-        remix1.addEventListener('click', () => {
-            this.playing = false;
-            playPause.innerHTML = 'Play';
-            audio.src = '../assets/CleanGuitarRiff.mp3';
-            audio.load();
-            audio.play();
-        });
-
-        remix2.addEventListener('click', () => {
-            this.playing = false;
-            playPause.innerHTML = 'Play';
-            audio.src = '../assets/CleanGuitarRiff_2.mp3';
-            audio.load();
-            audio.play();
-        });
+        const rewindButton = this.shadowRoot.querySelector('#rewind');
+        const fastForwardButton = this.shadowRoot.querySelector('#fast-forward');
+        const nextTrackButton = this.shadowRoot.querySelector('#next-track');
 
         playPause.addEventListener('click', () => {
             if (this.playing) {
@@ -136,6 +128,19 @@ export class RemixTable extends HTMLElement {
                 this.playing = true;
                 playPause.innerHTML = 'Pause';
             }
+        });
+
+        rewindButton.addEventListener('click', () => {
+            audio.currentTime -= 10; // Rewind by 10 seconds
+        });
+
+        fastForwardButton.addEventListener('click', () => {
+            audio.currentTime += 10; // Fast forward by 10 seconds
+        });
+
+        nextTrackButton.addEventListener('click', () => {
+            // Implement logic to switch to the next track
+            // For example: audio.src = 'next_track.mp3';
         });
 
         audio.addEventListener('timeupdate', () => {
@@ -154,4 +159,3 @@ export class RemixTable extends HTMLElement {
 }
 
 customElements.define('remix-table', RemixTable);
-
