@@ -54,10 +54,14 @@ export class HelloWorld extends HTMLElement {
            <div class="inner-row">
              <div class="cell">
                 <h1>Cell 1</h1>
-                <remix-table></remix-table>
              </div>
              <div class="cell">
-                <play-list></play-list>
+                <h1>Cell 2</h1>
+                <div>
+                    <button>Mix</button>
+                    <button>Boucle</button>
+                    <button>Playlist</button>
+                </div>
              </div>
            </div>
         </div>

@@ -95,6 +95,7 @@ export class RemixTable extends HTMLElement {
                     </div>
                     <span class="duration">0:00</span>
                 </div>
+                
             </div>
         `;
     }
