@@ -1,6 +1,12 @@
 export class RemixTable extends HTMLElement {
     constructor() {
         super();
+        this.playlist = [
+            '../assets/CleanGuitarRiff.mp3',
+            '../assets/Ssendu.mp3',
+            // Ajoutez d'autres morceaux au besoin
+        ];
+        this.currentTrackIndex = 0;
         this.attachShadow({ mode: 'open' });
         this.playing = false;
         this.defineListeners = this.defineListeners.bind(this);
@@ -117,7 +123,18 @@ export class RemixTable extends HTMLElement {
             this.playAudio(event.detail.src);
         });
     }
+    playNextTrack() {
+        // Vérifier si nous ne sommes pas à la fin de la liste
+        if (this.currentTrackIndex < this.playlist.length - 1) {
+            this.currentTrackIndex++;
+        } else {
+            // Si nous sommes à la fin, revenir au début
+            this.currentTrackIndex = 0;
+        }
 
+        // Charger et jouer le morceau suivant
+        this.playAudio(this.playlist[this.currentTrackIndex]);
+    }
     playAudio(src) {
         const audio = this.shadowRoot.querySelector('#audio');
         audio.src = src;
@@ -133,6 +150,15 @@ export class RemixTable extends HTMLElement {
         const rewindButton = this.shadowRoot.querySelector('#rewind');
         const fastForwardButton = this.shadowRoot.querySelector('#fast-forward');
         const nextTrackButton = this.shadowRoot.querySelector('#next-track');
+        
+        nextTrackButton.addEventListener('click', () => {
+            this.playNextTrack();
+        });
+        
+        audio.addEventListener('ended', () => {
+            // Lorsque le morceau se termine, passer au suivant
+            this.playNextTrack();
+        });
 
         playPause.addEventListener('click', () => {
             if (this.playing) {
