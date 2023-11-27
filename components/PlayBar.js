@@ -1,3 +1,5 @@
+import "../libs/webaudiocontrols.js";
+
 export class PlayBar extends HTMLElement {  
     constructor() {
       super();
@@ -24,44 +26,63 @@ export class PlayBar extends HTMLElement {
         height: 90%;
         padding: 0 5px;
     }    
+    
+    .slider-container {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+     }
+     
+     .slider {
+      -webkit-appearance: slider-vertical;
+      width: 25px;
+      height: 100px;
+      background: #d3d3d3;
+      outline: none;
+     }
+     input{
+      padding:15px;
+     }
+     p{
+      padding-left : 5px;
+     }
+     
+     .slider:hover {
+      background: #999;
+     }
+     .knob{
+      background-color = "white";
+     }
       </style>
-      <div class="player">
-        <div class="controls">
-        
-            <button class="play">
-                <svg width="16" height="16" viewBox="0 0 512.055 512.055">
-                    <path d="M500.235,236.946L30.901,2.28C16.717-4.813,0.028,5.502,0.028,21.361v469.333c0,15.859,16.689,26.173,30.874,19.081 l469.333-234.667C515.958,267.247,515.958,244.808,500.235,236.946z M42.694,456.176V55.879l400.297,200.149L42.694,456.176z"/>
-                </svg>
-            </button>
-            <button class="prev">
-                <svg width="16" height="16" viewBox="0 0 512 512">
-                    <path d="M256,0C114.618,0,0,114.618,0,256s114.618,256,256,256s256-114.618,256-256S397.382,0,256,0z M256,469.333 c-117.818,0-213.333-95.515-213.333-213.333S138.182,42.667,256,42.667S469.333,138.182,469.333,256S373.818,469.333,256,469.333 z"/>
-                    <path d="M372.693,131.243L202.027,237.909c-13.369,8.356-13.369,27.826,0,36.181l170.667,106.667 c14.209,8.881,32.64-1.335,32.64-18.091V149.333C405.333,132.577,386.902,122.362,372.693,131.243z M362.667,324.176L253.585,256 l109.082-68.176V324.176z"/>  
-                    <path d="M128,128c-11.782,0-21.333,9.551-21.333,21.333v213.333c0,11.782,9.551,21.333,21.333,21.333 c11.782,0,21.333-9.551,21.333-21.333V149.333C149.333,137.551,139.782,128,128,128z"/>
-                </svg>
-            </button>  
-
-            <button class="next">
-                <svg width="16" height="16" viewBox="0 0 512 512">
-                    <path d="M256,0C114.618,0,0,114.618,0,256s114.618,256,256,256s256-114.618,256-256S397.382,0,256,0z M256,469.333 c-117.818,0-213.333-95.515-213.333-213.333S138.182,42.667,256,42.667S469.333,138.182,469.333,256S373.818,469.333,256,469.333 z"/>
-                    <path d="M309.973,237.909L139.307,131.243c-14.209-8.881-32.64,1.335-32.64,18.091v213.333c0,16.756,18.431,26.971,32.64,18.091 l170.667-106.667C323.342,265.735,323.342,246.265,309.973,237.909z M149.333,324.176V187.824L258.415,256L149.333,324.176z"/>
-                    <path d="M384,128c-11.782,0-21.333,9.551-21.333,21.333v213.333c0,11.782,9.551,21.333,21.333,21.333 c11.782,0,21.333-9.551,21.333-21.333V149.333C405.333,137.551,395.782,128,384,128z"/>
-                </svg>
-            </button>
-
+      <div class="player" style="display: flex; flex-direction: column;">
+        <div class="slider-container">
+          <input type="range" min="1" max="100" value="50" class="slider" id="slider1">
+          <input type="range" min="1" max="100" value="50" class="slider" id="slider2">
+          <input type="range" min="1" max="100" value="50" class="slider" id="slider3">
         </div>
-    </div>
-
-        <div class="volume">
-        <input type="range" orient="vertical">
-    </div>
-          `;
+        <br>
+        <div class="slider-labels" style="display: flex; flex-direction: row;">
+          <p id="label1">Volume</p>
+          <p id="label2">Balance</p>
+          <p id="label3">Frequency</p>
+        </div>
+        <div class="knob">
+        <webaudio-knob id="knob"  
+        src="../images/LittlePatty.png" 
+        value="50" step="1" 
+        diameter="64" 
+        tooltip="Knob1 tooltip %d">
+        </webaudio-knob>
+        </div>
+      </div>
+      `;
     }
   
     connectedCallback() {
     }
   
     defineListeners() {
+      //je veux recuperer les valeur des slider a fin de les utiliser
     }
   }
   
