@@ -8,19 +8,39 @@ export class HelloWorld extends HTMLElement {
         display: flex;
         flex-direction: row;
         height: 33.33%;
-     }
-    
-     .cell {
+        height: auto;
+       width: auto;
+    }
+
+    .cell {
         flex: 1;
         border: 1px solid black;
         height: 200px;
-     }
-    
-     .inner-row {
+    }
+
+    .inner-row {
         display: flex;
         flex-direction: row;
         height: 50%;
-     }
+    }
+    button{
+      background-color: #4CAF50; /* Green */
+      border : none;
+      color: white;
+      padding: 16px 32px;
+      text-align: center;
+      text-decoration: none;
+      margin: 4px 2px;
+    }
+
+    /* Ajouter une classe spécifique pour styliser le composant RemixTable */
+    .remix-table-container {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #333;
+    }
      input[type=range][orient=vertical] {
       appearance: slider-vertical;
       width: 8px;
@@ -34,13 +54,10 @@ export class HelloWorld extends HTMLElement {
            <div class="inner-row">
              <div class="cell">
                 <h1>Cell 1</h1>
-                <play-bar></play-bar>
+                <remix-table></remix-table>
              </div>
              <div class="cell">
-                <h1>Cell 2</h1>
-                <button>Mix</button>
-                <button>Boucle</button>
-                <button>Playlist</button>
+                <play-list></play-list>
              </div>
            </div>
         </div>
