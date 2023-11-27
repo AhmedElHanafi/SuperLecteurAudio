@@ -1,172 +1,156 @@
-export class RemixTable extends HTMLElement {  
+export class RemixTable extends HTMLElement {
     constructor() {
-      super();
-      this.attachShadow({ mode: 'open' });
-      this.shadowRoot.innerHTML = `
-      <style>
-      .player {
-        width: 400px;
-        background: #333;
-        color: #fff;
-        padding: 20px;
-        border-radius: 4px;
-        }
-        .cover {
-        width: 100px;
-        float: left;
-        }
-        .cover img {
-        width: 100%;
-        border-radius: 2px;
-        }
-        .controls {
-        float: left;
-        width: calc(100% - 100px);
-        padding-left: 20px;
-        
-        }
-        .title,
-        .artist {
-        margin-bottom: 5px;
-        }
-        .buttons {
-        margin-bottom: 10px;
-        }
-        .buttons button {
-        width: 30px;
-        height: 30px;
-        border: none;
-        background: transparent;
-        color: #fff;
-        cursor: pointer;
-        
-        }
-        .timeline {
-        height: 4px;
-        width: 100%;
-        background: #666;
-        border-radius: 2px;
-        margin-bottom: 10px;
-        position: relative;
-        }
-        .progress {
-        height: 4px;
-        width: 0;
-        background: #1ed760;
-        border-radius: 2px;
-        transition: width 0.2s linear;
-        }
-        .thumb {
-        width: 16px;
-        height: 16px;
-        border: 4px solid #333;
-        background: #1ed760;
-        border-radius: 50%;
-        position: absolute;
-        left: 0;
-        top: -6px;
-        cursor: pointer;
-        }
-        .duration {
-        font-size: 12px;
-        }
-      </style>
-      <div class="player"> 
-      <div class="controls">
-        <div class="title">
-            Song Title
-        </div>
+        super();
+        this.attachShadow({ mode: 'open' });
+        this.playing = false;
+        this.defineListeners = this.defineListeners.bind(this);
+        this.shadowRoot.innerHTML = `
+            <style>
+                .player {
+                    width: 100%;
+                    max-width: 400px;
+                    margin: 0 auto;
+                    background: #333;
+                    color: #fff;
+                    padding: 20px;
+                    border-radius: 4px;
+                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+                }
 
-        <div class="artist">
-            Artist Name
-        </div>
+                audio {
+                    width: 100%;
+                }
 
-        <div class="buttons">
+                .controls {
+                    margin-top: 20px;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                }
 
-        <button class="prev">
-            <i class="fas fa-backward"></i>  
-        </button>
+                button {
+                    background-color: #1ed760;
+                    color: #fff;
+                    border: none;
+                    padding: 10px;
+                    border-radius: 4px;
+                    cursor: pointer;
+                    transition: background-color 0.3s ease;
+                }
 
-        <button class="play">
-            <i class="fas fa-play"></i>  
-        </button>
+                button:hover {
+                    background-color: #12763c;
+                }
 
-        <button class="next">  
-            <i class="fas fa-forward"></i>
-        </button>
+                .timeline {
+                    margin-top: 20px;
+                    height: 4px;
+                    background: #666;
+                    border-radius: 2px;
+                    position: relative;
+                }
 
-        </div>
+                .progress {
+                    height: 100%;
+                    width: 0;
+                    background: #1ed760;
+                    border-radius: 2px;
+                    transition: width 0.2s linear;
+                }
 
-        <div class="timeline">
-        <div class="progress">
-            <span class="thumb"></span>
-        </div>
+                .thumb {
+                    width: 16px;
+                    height: 16px;
+                    border: 4px solid #333;
+                    background: #1ed760;
+                    border-radius: 50%;
+                    position: absolute;
+                    left: 0;
+                    top: -6px;
+                    cursor: pointer;
+                }
 
-        <span class="duration">3:47</span>
-        </div>
-        </div> 
-        </div> 
-      `;
+                .duration {
+                    font-size: 12px;
+                    display: block;
+                    margin-top: 10px;
+                }
+            </style>
+
+            <div class="player">
+                <audio id="audio" controls>
+                    <source src="" type="audio/mp3">
+                    Your browser does not support the audio element.
+                </audio>
+
+                <div class="controls">
+                    <button id="remix-1">Load Remix 1</button>
+                    <button id="remix-2">Load Remix 2</button>
+                    <button id="play-pause">Play</button>
+                </div>
+
+                <div class="timeline">
+                    <div class="progress">
+                        <span class="thumb"></span>
+                    </div>
+                    <span class="duration">0:00</span>
+                </div>
+            </div>
+        `;
     }
-  
+
     connectedCallback() {
+        this.defineListeners();
     }
-    
-  
+
     defineListeners() {
-        const audio = document.getElementById('audio');
-        const remix_1 = document.getElementById('remix-1');
-        const duration_1 = document.getElementById('duration-1');
-        const remix_2 = document.getElementById('remix-2');
-        const duration_2 = document.getElementById('duration-2');
-        const playPause = document.getElementById('play-pause');
-        let playing = false;
-        let playTime = 0;
-        
-        remix_1.addEventListener('click', function() {
+        const audio = this.shadowRoot.querySelector('#audio');
+        const remix1 = this.shadowRoot.querySelector('#remix-1');
+        const remix2 = this.shadowRoot.querySelector('#remix-2');
+        const playPause = this.shadowRoot.querySelector('#play-pause');
+
+        remix1.addEventListener('click', () => {
+            this.playing = false;
             playPause.innerHTML = 'Play';
-            playing = false;
-            playTime = 0;
             audio.src = '../assets/CleanGuitarRiff.mp3';
-            audio.currentTime = playTime;
-            duration_1.innerHTML = '00:00';
-            duration_2.innerHTML = '00:00';
+            audio.load();
+            audio.play();
         });
-        
-        remix_2.addEventListener('click', function() {
+
+        remix2.addEventListener('click', () => {
+            this.playing = false;
             playPause.innerHTML = 'Play';
-            playing = false;
-            playTime = 0;
             audio.src = '../assets/CleanGuitarRiff_2.mp3';
-            audio.currentTime = playTime;
-            duration_1.innerHTML = '00:00';
-            duration_2.innerHTML = '00:00';
+            audio.load();
+            audio.play();
         });
-        
-        playPause.addEventListener('click', function() {
-            console.log("click play");
-            if (playing) {
+
+        playPause.addEventListener('click', () => {
+            if (this.playing) {
                 audio.pause();
-                playing = false;
+                this.playing = false;
                 playPause.innerHTML = 'Play';
             } else {
                 audio.play();
-                playing = true;
+                this.playing = true;
                 playPause.innerHTML = 'Pause';
-                setInterval(function() {
-                    playTime = audio.currentTime;
-                    let minutes = Math.floor(playTime / 60);
-                    let seconds = Math.floor(playTime - minutes * 60);
-                    if (seconds < 10) {
-                        seconds = '0' + seconds;
-                    }
-                    duration_1.innerHTML = minutes + ':' + seconds;
-                    duration_2.innerHTML = minutes + ':' + seconds;
-                }, 1000);
             }
         });
-        
-  }
+
+        audio.addEventListener('timeupdate', () => {
+            const progress = (audio.currentTime / audio.duration) * 100;
+            const thumb = this.shadowRoot.querySelector('.thumb');
+            const duration = this.shadowRoot.querySelector('.duration');
+            const minutes = Math.floor(audio.currentTime / 60);
+            const seconds = Math.floor(audio.currentTime - minutes * 60);
+            const formattedTime = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+
+            this.shadowRoot.querySelector('.progress').style.width = `${progress}%`;
+            thumb.style.left = `${progress}%`;
+            duration.innerHTML = formattedTime;
+        });
+    }
 }
-  customElements.define('remix-table', RemixTable);
-  
+
+customElements.define('remix-table', RemixTable);
+

@@ -10,39 +10,48 @@
     <script src="components/HelloWorld.js" type="module"></script>
     <script src="components/TopBar.js" type="module"></script>
     <script src="components/RemixTable.js" type="module"></script>
+    
     <style>
-        .row {
-           display: flex;
-           flex-direction: row;
-           height: 33.33%;
-        }
-       
-        .cell {
-           flex: 1;
-           border: 1px solid black;
-           height: 200px;
-        }
-       
-        .inner-row {
-           display: flex;
-           flex-direction: row;
-           height: 50%;
-        }
-       </style>
+      .row {
+          display: flex;
+          flex-direction: row;
+          height: 33.33%;
+          height: auto;
+         width: auto;
+      }
+
+      .cell {
+          flex: 1;
+          border: 1px solid black;
+          height: 200px;
+      }
+
+      .inner-row {
+          display: flex;
+          flex-direction: row;
+          height: 50%;
+      }
+
+      /* Ajouter une classe spécifique pour styliser le composant RemixTable */
+      .remix-table-container {
+          flex: 1;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          background-color: #333;
+      }
+  </style>
 </head>
 <body>
     <!-- Place your content here -->
     <div class="row">
-        <div class="cell">
-           <div class="inner-row">
-             <div class="cell">
-                <h1>Cell 1</h1>
-             </div>
+      <div class="cell inner-row">
+          <div class="remix-table-container">
+              <remix-table></remix-table>
+          </div>
              <div class="cell">
                 <h1>Cell 2</h1>
-                <button onclick="getValue1()">Get Slider 1 Value</button>
-                <button onclick="getValue2()">Get Slider 2 Value</button>
-                <button onclick="setValue1()">Set Slider 1 Value to 25</button>
+                
              </div>
            </div>
         </div>
@@ -81,6 +90,6 @@
         </div>
        </div>
     <!-- Place your scripts here -->
-    <script src="js/script.js"></script>
+    
 </body>
 </html>
