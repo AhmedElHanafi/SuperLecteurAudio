@@ -52,19 +52,23 @@
     }
 
     connectedCallback() {
-        this.audioElement = document.querySelector('remix-table #audio');
+        this.audioElement = this.closest('remix-table').shadowRoot.querySelector('#audio');
 
         if (this.audioElement) {
-            // Initialiser la visualisation
-            this.initVisualization();
+            // Add an event listener for a user gesture (e.g., click)
+            document.addEventListener('click', () => {
+                // Now, within this event listener, create the AudioContext
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                this.context = audioContext;
 
-            // Démarrer la visualisation au chargement de la page
-            document.addEventListener('DOMContentLoaded', () => this.startVisualization());
+                // Initialize the visualization
+                this.initVisualization();
+                this.startVisualization();
+            });
         } else {
             console.error("L'élément audio n'a pas été trouvé dans le lecteur RemixTable.");
         }
     }
-    
 
     initVisualization() {
         const audioContext = new (window.AudioContext || window.webkitAudioContext)();
