@@ -1,29 +1,37 @@
+// RemixTable.js
 export class RemixTable extends HTMLElement {
     constructor() {
         super();
         this.playlist = [
-            '../assets/CleanGuitarRiff.mp3',
-            '../assets/Ssendu.mp3',
+            'assets/CleanGuitarRiff.mp3',
+            'assets/Ssendu.mp3',
             // Ajoutez d'autres morceaux au besoin
         ];
+        
         this.currentTrackIndex = 0;
         this.attachShadow({ mode: 'open' });
+
+        
         this.playing = false;
         this.defineListeners = this.defineListeners.bind(this);
         this.shadowRoot.innerHTML = `
+
             <style>
+                /* Ajoutez vos styles pour le lecteur ici */
                 .player {
-                    width: 100%;
-                    max-width: 400px;
-                    margin: 0 auto;
+                    
+                    width: 100%; /* Take up 100% of the width */
+                    height: 45vh; /* Cover the entire height of the window */
                     background: #333;
                     color: #fff;
                     padding: 20px;
-                    border-radius: 4px;
+                    border-radius: 1.5px;
                     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
                     display: flex;
                     flex-direction: column;
                     align-items: center;
+                    position: relative;
+                    z-index: 2; /* Make sure the RemixTable is above the music-vision */
                 }
 
                 audio {
@@ -33,7 +41,7 @@ export class RemixTable extends HTMLElement {
                 .controls {
                     margin-top: 20px;
                     display: flex;
-                    justify-content: space-around; /* Espacement équitable des boutons */
+                    justify-content: space-around;
                     align-items: center;
                 }
 
@@ -87,16 +95,24 @@ export class RemixTable extends HTMLElement {
                     margin-top: 10px;
                     color: #ccc;
                 }
+
+                canvas {
+                    width: 100%;
+                    height: 100%;
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    pointer-events: none;
+                    z-index: 1;
+                }
             </style>
 
             <div class="player remix-table">
                 <audio id="audio" controls>
-              
-                    <source src='../assets/CleanGuitarRiff.mp3' type="audio/mp3">
-                    <source src='../assets/Ssendu.mp3' type="audio/mp3">
+                    <source src='${this.playlist[0]}' type="audio/mp3">
                     Your browser does not support the audio element.
                 </audio>
-
+              <music-vision id="visualization"></music-vision>
                 <div class="controls">
                     <button id="play-pause">Play</button>
                     <button id="rewind">Rewind</button>
@@ -109,54 +125,62 @@ export class RemixTable extends HTMLElement {
                         <span class="thumb"></span>
                     </div>
                 </div>
-                
 
                 <span class="duration">0:00</span>
-                
             </div>
         `;
     }
 
     connectedCallback() {
+        
         this.defineListeners();
         document.addEventListener('playSong', (event) => {
             this.playAudio(event.detail.src);
+
+            // Ajoutez une vérification avant d'appeler startVisualization
+            if (this.musicVision && typeof this.musicVision.startVisualization === 'function') {
+                this.musicVision.startVisualization();
+            } else {
+                console.error("La fonction startVisualization n'est pas définie sur music-vision.");
+            }
         });
     }
+
     playNextTrack() {
-        // Vérifier si nous ne sommes pas à la fin de la liste
         if (this.currentTrackIndex < this.playlist.length - 1) {
             this.currentTrackIndex++;
         } else {
-            // Si nous sommes à la fin, revenir au début
             this.currentTrackIndex = 0;
         }
-
-        // Charger et jouer le morceau suivant
         this.playAudio(this.playlist[this.currentTrackIndex]);
     }
+    
     playAudio(src) {
         const audio = this.shadowRoot.querySelector('#audio');
         audio.src = src;
+
+        audio.addEventListener('canplaythrough', () => {
+            audio.play();
+            this.playing = true;
+            this.shadowRoot.querySelector('#play-pause').innerHTML = 'Pause';
+        });
+
         audio.load();
-        audio.play();
-        this.playing = true;
-        this.shadowRoot.querySelector('#play-pause').innerHTML = 'Pause';
     }
 
+    
     defineListeners() {
         const audio = this.shadowRoot.querySelector('#audio');
         const playPause = this.shadowRoot.querySelector('#play-pause');
         const rewindButton = this.shadowRoot.querySelector('#rewind');
         const fastForwardButton = this.shadowRoot.querySelector('#fast-forward');
         const nextTrackButton = this.shadowRoot.querySelector('#next-track');
-        
+
         nextTrackButton.addEventListener('click', () => {
             this.playNextTrack();
         });
-        
+
         audio.addEventListener('ended', () => {
-            // Lorsque le morceau se termine, passer au suivant
             this.playNextTrack();
         });
 
@@ -173,16 +197,11 @@ export class RemixTable extends HTMLElement {
         });
 
         rewindButton.addEventListener('click', () => {
-            audio.currentTime -= 10; // Rewind by 10 seconds
+            audio.currentTime -= 10;
         });
 
         fastForwardButton.addEventListener('click', () => {
-            audio.currentTime += 10; // Fast forward by 10 seconds
-        });
-
-        nextTrackButton.addEventListener('click', () => {
-            // Implement logic to switch to the next track
-            // For example: audio.src = 'next_track.mp3';
+            audio.currentTime += 10;
         });
 
         audio.addEventListener('timeupdate', () => {

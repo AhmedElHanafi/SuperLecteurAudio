@@ -7,9 +7,15 @@ export class PlayList extends HTMLElement {
       this.shadowRoot.innerHTML = `
           <style>
               .playlist-container {
-                  background-color: #333;
-                  padding: 10px;
-                  border-radius: 4px;
+               
+            
+                  width: 100%; /* Take up 100% of the width */
+                    background: #333;
+                    color: #fff;
+                    padding: 20px;
+                    border-radius: 1.5px;
+                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+                  border-radius: 1.5px;
               }
 
               h2 {
@@ -17,11 +23,13 @@ export class PlayList extends HTMLElement {
               }
 
               ol {
+        
                   list-style-type: decimal;
-                  padding: 0;
+                  padding: 40;
               }
 
               li {
+                color: #fff;
                   margin-bottom: 10px;
               }
 
