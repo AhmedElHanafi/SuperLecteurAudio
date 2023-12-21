@@ -128,11 +128,13 @@ export class MyEquilizer extends HTMLElement {
                     <button id="playPauseBtn">Play</button>
                 </div>
                 <div class="timeline">
-                    <div class="progress"></div>
                     <div class="thumb"></div>
                 </div>
-                <span class="duration">0:00 / 0:00</span>
-                <canvas id="visualizer"></canvas>
+                <div>
+                    <webaudio-knob id="highPassSlider" src="../assets/knobs/knob-1.png" min="0" max="100"></webaudio-knob>
+                    <webaudio-knob id="lowPassSlider" src="../assets/knobs/knob-1.png" min="0" max="100"></webaudio-knob>
+                    <webaudio-knob id="volumeSlider" src="../assets/knobs/knob-1.png" min="0" max="100" value="50"></webaudio-knob>
+                </div>
             </div>
         `;
     }
@@ -153,8 +155,8 @@ export class MyEquilizer extends HTMLElement {
         // Récupérez le Shadow DOM
         const shadow = this.shadowRoot;
 
-        // Créez un curseur pour le filtre passe-haut
-        const highPassSlider = document.createElement('input');
+        /*// Créez un curseur pour le filtre passe-haut
+        const highPassSlider = document.getElementById('highPassSlider');
         highPassSlider.type = 'range';
         highPassSlider.min = 0;
         highPassSlider.max = 10000; // Vous pouvez ajuster la valeur maximale selon vos besoins
@@ -163,7 +165,7 @@ export class MyEquilizer extends HTMLElement {
             this.highPassFilter.frequency.value = parseFloat(highPassSlider.value);
         });
         // Créez un curseur pour le filtre passe-bas
-        const lowPassSlider = document.createElement('input');
+        const lowPassSlider = document.getElementById('lowPassSlider');
         lowPassSlider.type = 'range';
         lowPassSlider.min = 0;
         lowPassSlider.max = 10000; // Vous pouvez ajuster la valeur maximale selon vos besoins
@@ -196,7 +198,7 @@ export class MyEquilizer extends HTMLElement {
         controlsDiv.appendChild(notchBtn);
 
         // Créez un curseur pour le contrôle du volume
-        const volumeSlider = document.createElement('input');
+        const volumeSlider = document.getElementById('volumeSlider');
         volumeSlider.type = 'range';
         volumeSlider.min = 0;
         volumeSlider.max = 1; // Valeur maximale du volume
@@ -207,7 +209,28 @@ export class MyEquilizer extends HTMLElement {
         });
 
         // Ajoutez le curseur de volume à l'interface utilisateur
-        controlsDiv.appendChild(volumeSlider);
+        //controlsDiv.appendChild(volumeSlider);*/
+
+        // Récupérez les éléments Web Audio existants par leur ID
+        const highPassSlider = this.shadowRoot.querySelector('#highPassSlider');
+        const lowPassSlider = this.shadowRoot.querySelector('#lowPassSlider');
+        const volumeSlider = this.shadowRoot.querySelector('#volumeSlider');
+
+        // Ajoutez des écouteurs d'événements aux sliders existants
+        highPassSlider.addEventListener('input', () => {
+            const frequency = (parseFloat(highPassSlider.value) / 100) * this.audioContext.sampleRate / 2;
+            this.highPassFilter.frequency.setValueAtTime(frequency, this.audioContext.currentTime);
+        });
+
+        lowPassSlider.addEventListener('input', () => {
+            const frequency = (parseFloat(lowPassSlider.value) / 100) * this.audioContext.sampleRate / 2;
+            this.lowPassFilter.frequency.setValueAtTime(frequency, this.audioContext.currentTime);
+        });
+
+        volumeSlider.addEventListener('input', () => {
+            const gainValue = parseFloat(volumeSlider.value) / 100;
+            this.gainNode.gain.setValueAtTime(gainValue, this.audioContext.currentTime);
+        });
     }
 
     // Fonction pour activer/désactiver un filtre
@@ -251,12 +274,12 @@ export class MyEquilizer extends HTMLElement {
 
         // Connectez les filtres en série
         this.lowPassFilter.connect(this.bandPassFilter);
-        this.bandPassFilter.connect(this.notchFilter);
-        this.notchFilter.connect(this.analyser);
+        this.bandPassFilter.connect(this.analyser);
+        //this.notchFilter.connect(this.analyser);
 
         // Créez un nœud de gain pour le contrôle du volume
         this.volumeNode = this.audioContext.createGain();
-        this.notchFilter.connect(this.volumeNode);
+        //this.notchFilter.connect(this.volumeNode);
         this.volumeNode.connect(this.audioContext.destination);
     }
 
@@ -274,7 +297,6 @@ export class MyEquilizer extends HTMLElement {
 
     // Charge et joue un morceau de la playlist
     async loadAndPlayTrack() {
-        const audioElement = this.shadowRoot.querySelector('audio');
         const audioBuffer = await this.loadAudio(this.playlist[this.currentTrackIndex]);
         
         // Utilisez un nœud AudioBufferSourceNode pour la lecture audio
