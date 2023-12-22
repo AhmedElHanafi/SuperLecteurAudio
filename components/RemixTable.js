@@ -14,6 +14,18 @@ export class RemixTable extends HTMLElement {
         
         this.playing = false;
         this.defineListeners = this.defineListeners.bind(this);
+
+        // Ajoutez les propriétés pour les filtres et le gain
+        this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        this.volumeControl = this.audioContext.createGain();
+
+        // Connectez les nœuds audio
+
+        this.volumeControl.connect(this.audioContext.destination);
+
+        // Utilisez les valeurs par défaut
+        this.volumeControl.gain.value = 0.5; // Valeur entre 0 et 1
+
         this.shadowRoot.innerHTML = `
 
             <style>
@@ -127,8 +139,18 @@ export class RemixTable extends HTMLElement {
                 </div>
 
                 <span class="duration">0:00</span>
+                <div class="equilizer">
+                <br>
+                <div>
+                    <webaudio-knob id="volumeSlider" src="../assets/knobs/knob-1.png" min="0" max="100" value="50"></webaudio-knob>
+                </div>
+            </div>
             </div>
         `;
+    }
+
+    get audioElement() {
+        return this.shadowRoot.querySelector('#audio');
     }
 
     connectedCallback() {
@@ -143,6 +165,8 @@ export class RemixTable extends HTMLElement {
             } else {
                 console.error("La fonction startVisualization n'est pas définie sur music-vision.");
             }
+
+            this.dispatchEvent(new CustomEvent('trackChanged', { detail: { src: event.detail.src } }));
         });
     }
 
@@ -159,10 +183,14 @@ export class RemixTable extends HTMLElement {
         const audio = this.shadowRoot.querySelector('#audio');
         audio.src = src;
 
+        // Mettez à jour cette ligne pour utiliser le contexte audio
+        this.volumeControl.connect(this.volumeControl);
+        
         audio.addEventListener('canplaythrough', () => {
             audio.play();
             this.playing = true;
-            this.shadowRoot.querySelector('#play-pause').innerHTML = 'Pause';
+            if(this.playing)
+                this.shadowRoot.querySelector('#play-pause').innerHTML = 'Pause';
         });
 
         audio.load();
@@ -175,6 +203,7 @@ export class RemixTable extends HTMLElement {
         const rewindButton = this.shadowRoot.querySelector('#rewind');
         const fastForwardButton = this.shadowRoot.querySelector('#fast-forward');
         const nextTrackButton = this.shadowRoot.querySelector('#next-track');
+        const volumeSlider = this.shadowRoot.querySelector('#volumeSlider');
 
         nextTrackButton.addEventListener('click', () => {
             this.playNextTrack();
@@ -216,6 +245,11 @@ export class RemixTable extends HTMLElement {
             thumb.style.left = `${progress}%`;
             duration.innerHTML = formattedTime;
         });
+        // give me the code to increase and decrease the volume 
+        volumeSlider.addEventListener('input', () => {
+            const vol = volumeSlider.value / 100;
+            audio.volume = vol;
+            });
     }
 }
 
