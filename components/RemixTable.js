@@ -163,7 +163,7 @@ export class RemixTable extends HTMLElement {
             if (this.musicVision && typeof this.musicVision.startVisualization === 'function') {
                 this.musicVision.startVisualization();
             } else {
-                console.error("La fonction startVisualization n'est pas définie sur music-vision.");
+                console.log("La fonction startVisualization n'est pas définie sur music-vision.");
             }
 
             this.dispatchEvent(new CustomEvent('trackChanged', { detail: { src: event.detail.src } }));

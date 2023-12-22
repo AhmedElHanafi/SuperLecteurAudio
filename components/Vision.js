@@ -52,7 +52,7 @@
     }
 
     connectedCallback() {
-        this.audioElement = this.closest('remix-table').shadowRoot.querySelector('#audio');
+        this.audioElement = this.shadowRoot.querySelector('#audio');
 
         if (this.audioElement) {
             // Add an event listener for a user gesture (e.g., click)
@@ -66,7 +66,7 @@
                 this.startVisualization();
             });
         } else {
-            console.error("L'élément audio n'a pas été trouvé dans le lecteur RemixTable.");
+            console.log("L'élément audio n'a pas été trouvé dans le lecteur RemixTable.");
         }
     }
 
