@@ -54,6 +54,12 @@ export class PlayList extends HTMLElement {
   connectedCallback() {
       this.addSong('../assets/CleanGuitarRiff.mp3', "Clean Guitar Riff");
       this.addSong('../assets/Ssendu.mp3', "Ssendu");
+      this.addSong('../assets/The Most Beautiful & Relaxing Piano Pieces.mp3', "The Most Beautiful & Relaxing Piano Pieces");
+      this.addSong('../assets/Alan Walker - Faded.mp3', "Alan Walker - Faded");
+      this.addSong('../assets/Paradise - Coldplay.mp3', "Paradise - Coldplay");
+      this.addSong('../assets/Tom Frager - Lady Melody.mp3', "Tom Frager - Lady Melody");
+
+      
   }
 
   addSong(src, name) {

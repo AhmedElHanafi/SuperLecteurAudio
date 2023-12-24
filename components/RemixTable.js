@@ -5,6 +5,10 @@ export class RemixTable extends HTMLElement {
         this.playlist = [
             'assets/CleanGuitarRiff.mp3',
             'assets/Ssendu.mp3',
+            'assest/The Most Beautiful & Relaxing Piano Pieces',
+            'assets/Alan Walker - Faded',
+            'assets/Paradise - Coldplay',
+            'assets/Tom Frager - Lady Melody',
             // Ajoutez d'autres morceaux au besoin
         ];
         
