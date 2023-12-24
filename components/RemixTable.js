@@ -18,10 +18,14 @@ export class RemixTable extends HTMLElement {
         // Ajoutez les propriétés pour les filtres et le gain
         this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
         this.volumeControl = this.audioContext.createGain();
+        this.frequence = this.audioContext.createBiquadFilter();
+        this.frequence.value = 20;
+        this.frequence.type = "peaking";
 
         // Connectez les nœuds audio
-
-        this.volumeControl.connect(this.audioContext.destination);
+        this.volumeControl.connect(this.frequence).connect(this.audioContext.destination);
+        //this.frequence.connect(this.audioContext.destination);
+        
 
         // Utilisez les valeurs par défaut
         this.volumeControl.gain.value = 0.5; // Valeur entre 0 et 1
@@ -143,7 +147,8 @@ export class RemixTable extends HTMLElement {
                 <br>
                 <div>
                     <webaudio-knob id="volumeSlider" src="../assets/knobs/knob-1.png" min="0" max="100" value="50"></webaudio-knob>
-                </div>
+                    <webaudio-knob id="frequence" src="../assets/knobs/knob-1.png" min="0" max="100" value="50"></webaudio-knob>
+                    </div>
             </div>
             </div>
         `;
@@ -204,6 +209,7 @@ export class RemixTable extends HTMLElement {
         const fastForwardButton = this.shadowRoot.querySelector('#fast-forward');
         const nextTrackButton = this.shadowRoot.querySelector('#next-track');
         const volumeSlider = this.shadowRoot.querySelector('#volumeSlider');
+        const frequence = this.shadowRoot.querySelector('#frequence');
 
         nextTrackButton.addEventListener('click', () => {
             this.playNextTrack();
@@ -250,7 +256,16 @@ export class RemixTable extends HTMLElement {
             const vol = volumeSlider.value / 100;
             audio.volume = vol;
             });
-    }
+        
+            frequence.addEventListener('input', () => {
+                // set the audio context to changes of the frequence slider 
+                let frequencyValue = frequence.value*128;
+                console.log(this.frequence.value);
+                this.frequence.frequency.value = frequencyValue;
+                this.frequence.value = frequencyValue; 
+                console.log(this.frequence.value);
+
+            });    }
 }
 
 customElements.define('remix-table', RemixTable);
